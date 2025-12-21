@@ -3,7 +3,7 @@
 \usepackage[T1]{fontenc}
 
 % other packages
-\usepackage{latexsym,amsmath,xcolor,multicol,booktabs,calligra}
+\usepackage{latexsym,amsmath,xcolor,multicol,booktabs}
 \usepackage{graphicx,pstricks,listings,stackengine}
 
 \author{Yanqiao Chen}
@@ -58,7 +58,6 @@
     \begin{figure}[htbp]
         \begin{center}
             \includegraphics[scale = 0.3]{pic/2.png}
-            \caption{卷积模块位置和接口示意图}
         \end{center}
     \end{figure}
 \end{frame}
@@ -91,7 +90,7 @@
 
 \begin{frame}{理论周期数分析}
     \scriptsize
-    根据所给矩阵大小$10\times 12$和卷积核大小$3\times 3$，计算出输出矩阵大小为$8\times 10$。每个输出位置需要进行$3\times 3=9$次乘加操作，单个位置所需要的周期数为：检查边界1周期，读取矩阵2周期，读取卷积核2周期，累加1周期，因此单个位置总共需要6周期。总共循环9次，计算得到单个位置需要81周期。其中，每次INIT需要消耗1周期，总共80周期，WRITE需要1周期，总共80周期，NEXT\_PIXEL需要1周期，总共80周期，总共1周期。（done和start共两周期，忽略不计）因此计算得到：
+    根据所给矩阵大小$10\times 12$和卷积核大小$3\times 3$，计算出输出矩阵大小为$8\times 10$。每个输出位置需要进行$$3\times 3=9$$次乘加操作，单个位置所需要的周期数为：检查边界1周期，读取矩阵2周期，读取卷积核2周期，累加1周期，因此单个位置总共需要6周期。总共循环9次，计算得到单个位置需要81周期。其中，每次INIT需要消耗1周期，总共80周期，WRITE需要1周期，总共80周期，NEXT\_PIXEL需要1周期，总共80周期。（done和start共两周期，忽略不计）因此计算得到：
     $$
     81\times 80 + 80 + 80 + 80 = 6720
     $$
@@ -102,7 +101,13 @@
 
 \begin{frame}{实际测试时钟周期数}
     \scriptsize
-实际经过测试，我们的周期数为5280周期，低于理论周期数6720周期。这可能是由于Vivado的综合优化实现果，减少了一些不必要的状态转换和等待时间，从而提高了整体的执行效率。
+实际经过测试，我们的周期数为5280周期，低于理论周期数6720周期。这可能是Vivado的综合优化实现的结果，减少了一些不必要的状态转换和等待时间，从而提高了整体的执行效率。
+    \begin{figure}[htbp]
+        \begin{center}
+            \includegraphics[scale = 0.6]{pic/count.png}
+        \end{center}
+    \end{figure}
+    其中最后一行为时钟周期数。
 \end{frame}
 
 \section{资源使用报告}
@@ -110,6 +115,12 @@
 \begin{frame}{资源使用报告}
     \scriptsize
 我们的综合资源使用报告如下：
+    \begin{figure}[htbp]
+        \begin{center}
+            \includegraphics[scale = 0.3]{pic/util.png}
+        \end{center}
+    \end{figure}
+    由上可见，我们的卷积模块使用LUT共210个，slice Register共107个，LUT主要用于逻辑实现。
 \end{frame}
 
 
